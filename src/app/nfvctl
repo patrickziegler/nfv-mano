@@ -1,0 +1,151 @@
+#!/usr/bin/env python3
+#
+# Copyright (C) 2019 Patrick Ziegler
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+import argparse
+import json
+import os
+import sys
+
+import requests
+import yaml
+
+from nfv.placement.sfc import ServiceFunction
+from nfv.version import __logo__
+
+
+def get_app_path(app):
+    return os.path.abspath(
+        os.sep.join(
+            (
+                os.path.dirname(os.path.abspath(__file__)),
+                "..",
+                "nfv",
+                "mano",
+                app,
+            )
+        )
+    )
+
+
+class NfvCtl:
+
+    def __init__(self):
+        from argparse import RawTextHelpFormatter
+        self.parser = argparse.ArgumentParser(
+            formatter_class=RawTextHelpFormatter
+        )
+        self.parser.add_argument("cmd", type=str, help="Subcommand")
+        self.parser.add_argument("-v", "--verbose", action="store_true")
+        self.parser.description = """Available subcommands:
+init ...... initialize host as worker or master
+sfc ....... send sfc add / remove requests
+vnf ....... send vnf add / remove requests
+version ... print version"""
+        args = self.parser.parse_args(sys.argv[1:2])
+        try:
+            handler = getattr(self, args.cmd)
+            handler()
+        except AttributeError:
+            print("Unrecognized command '%s'" % args.cmd)
+            self.parser.print_help()
+
+    def init(self):
+        self.parser.add_argument("role", type=str, help="Role of deployment")
+        self.parser.description = """Available roles:
+master .... running NFVO
+worker .... running NFVM and VIM"""
+        args = self.parser.parse_args(sys.argv[1:3])
+
+        def _init_master():
+            args = self.parser.parse_args(sys.argv[1:])
+            from ryu.cmd import manager as RyuManager
+            from ryu import cfg as RyuCfg
+            RyuCfg.CONF.set_default("verbose", args.verbose)
+            print(__logo__)
+            RyuManager.main(args=[sys.argv[0], get_app_path("nfvo.py")])
+
+        def _init_worker():
+            self.parser.add_argument("iface", type=str)
+            args = self.parser.parse_args(sys.argv[1:])
+            from ryu.cmd import manager as RyuManager
+            from ryu import cfg as RyuCfg
+            RyuCfg.CONF.set_default("verbose", args.verbose)
+            RyuCfg.CONF.register_cli_opt(RyuCfg.StrOpt("iface", default=args.iface))
+            print(__logo__)
+            RyuManager.main(args=[sys.argv[0], get_app_path("nfvm.py")])
+
+        dispatch = {
+            "master": _init_master,
+            "worker": _init_worker,
+        }
+        try:
+            handler = dispatch[args.role]
+            handler()
+        except KeyError:
+            print("Unrecognized role '%s'" % args.role)
+            self.parser.print_help()
+
+    def sfc(self):
+        self.parser.add_argument("action", type=str)
+        self.parser.add_argument("nsd", type=str)
+        self.parser.add_argument("--addr", type=str, default="10.0.0.1:8080")
+        self.parser.description = """Available actions:
+add ....... register new sfc described in the nsd file
+remove .... unregister sfc described in the nsd file"""
+        args = self.parser.parse_args(sys.argv[1:])
+        with open(args.nsd) as fp:
+            nsd = yaml.safe_load(fp)
+        return requests.post(
+            url="http://%s/sfc/%s" % (args.addr, args.action),
+            data=json.dumps(nsd),
+            headers={"Content-type": "application/json"}
+        )
+
+    def vnf(self):
+        self.parser.add_argument("action", type=str)
+        self.parser.add_argument("image", type=str, default="vnf-echo", nargs="?")
+        self.parser.add_argument("label_in", type=int, default=195993, nargs="?")
+        self.parser.add_argument("label_out", type=int, default=232263, nargs="?")
+        self.parser.add_argument("param", type=str, default=None, nargs="?")
+        self.parser.add_argument("-i", "--immediate", action="store_true")
+        self.parser.add_argument("-t", "--timeout", type=int, default=10)
+        self.parser.add_argument("--addr", type=str, default="10.0.0.1:8080")
+        self.parser.description = """Available actions:
+add ....... request vnf with given parameters
+remove .... remove vnf with given parameters"""
+        args = self.parser.parse_args(sys.argv[1:])
+        vnf = ServiceFunction(
+            image=args.image,
+            label_in=args.label_in,
+            label_out=args.label_out,
+            param=args.param,
+            timeout=args.timeout,
+            immediate=args.immediate,
+        )
+        print(vnf.as_json())
+        return requests.post(
+            url="http://%s/vnf/%s" % (args.addr, args.action),
+            data=vnf.as_json(),
+            headers={"Content-type": "application/json"}
+        )
+
+    def version(self):
+        print(__logo__)
+
+
+if __name__ == "__main__":
+    NfvCtl()

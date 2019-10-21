@@ -1,0 +1,6 @@
+[submodule "extern/mininet"]
+	path = extern/mininet
+	url = https://github.com/mininet/mininet
+[submodule "extern/linux"]
+	path = extern/linux
+	url = https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git

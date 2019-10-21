@@ -1,0 +1,336 @@
+[
+    {
+        "OFPFlowMod": {
+            "buffer_id": 4294967295,
+            "command": 0,
+            "cookie": 0,
+            "cookie_mask": 0,
+            "flags": 0,
+            "hard_timeout": 0,
+            "idle_timeout": 0,
+            "instructions": [
+                {
+                    "OFPInstructionGotoTable": {
+                        "len": 8,
+                        "table_id": 1,
+                        "type": 1
+                    }
+                }
+            ],
+            "match": {
+                "OFPMatch": {
+                    "oxm_fields": [],
+                    "length": null,
+                    "type": 1
+                }
+            },
+            "out_group": 0,
+            "out_port": 0,
+            "priority": 0,
+            "table_id": 0
+        }
+    },
+    {
+        "OFPFlowMod": {
+            "buffer_id": 4294967295,
+            "command": 0,
+            "cookie": 0,
+            "cookie_mask": 0,
+            "flags": 0,
+            "hard_timeout": 0,
+            "idle_timeout": 0,
+            "instructions": [
+                {
+                    "OFPInstructionActions": {
+                        "actions": [
+                            {
+                                "OFPActionOutput": {
+                                    "len": 16,
+                                    "max_len": 65509,
+                                    "port": 4294967293,
+                                    "type": 0
+                                }
+                            }
+                        ],
+                        "type": 4
+                    }
+                },
+                {
+                    "OFPInstructionGotoTable": {
+                        "len": 8,
+                        "table_id": 1,
+                        "type": 1
+                    }
+                }
+            ],
+            "match": {
+                "OFPMatch": {
+                    "oxm_fields": [
+                        {
+                            "OXMTlv": {
+                                "field": "eth_type",
+                                "value": 2048,
+                                "mask": null
+                            }
+                        }
+                    ],
+                    "length": null,
+                    "type": 1
+                }
+            },
+            "out_group": 0,
+            "out_port": 0,
+            "priority": 1,
+            "table_id": 0
+        }
+    },
+    {
+        "OFPFlowMod": {
+            "buffer_id": 4294967295,
+            "command": 0,
+            "cookie": 0,
+            "cookie_mask": 0,
+            "flags": 0,
+            "hard_timeout": 0,
+            "idle_timeout": 0,
+            "instructions": [
+                {
+                    "OFPInstructionActions": {
+                        "actions": [
+                            {
+                                "OFPActionOutput": {
+                                    "len": 16,
+                                    "max_len": 65509,
+                                    "port": 4294967293,
+                                    "type": 0
+                                }
+                            }
+                        ],
+                        "type": 4
+                    }
+                }
+            ],
+            "match": {
+                "OFPMatch": {
+                    "oxm_fields": [
+                        {
+                            "OXMTlv": {
+                                "field": "eth_type",
+                                "value": 35020,
+                                "mask": null
+                            }
+                        }
+                    ],
+                    "length": null,
+                    "type": 1
+                }
+            },
+            "out_group": 0,
+            "out_port": 0,
+            "priority": 3,
+            "table_id": 0
+        }
+    },
+    {
+        "OFPFlowMod": {
+            "buffer_id": 4294967295,
+            "command": 0,
+            "cookie": 0,
+            "cookie_mask": 0,
+            "flags": 0,
+            "hard_timeout": 0,
+            "idle_timeout": 0,
+            "instructions": [
+                {
+                    "OFPInstructionActions": {
+                        "actions": [
+                            {
+                                "OFPActionOutput": {
+                                    "len": 16,
+                                    "max_len": 65509,
+                                    "port": 4294967288,
+                                    "type": 0
+                                }
+                            }
+                        ],
+                        "type": 4
+                    }
+                }
+            ],
+            "match": {
+                "OFPMatch": {
+                    "oxm_fields": [
+                        {
+                            "OXMTlv": {
+                                "field": "eth_src",
+                                "value": "00:00:00:00:00:00",
+                                "mask": null
+                            }
+                        },
+                        {
+                            "OXMTlv": {
+                                "field": "eth_type",
+                                "value": 35020,
+                                "mask": null
+                            }
+                        }
+                    ],
+                    "length": null,
+                    "type": 1
+                }
+            },
+            "out_group": 0,
+            "out_port": 0,
+            "priority": 4,
+            "table_id": 0
+        }
+    },
+    {
+        "OFPFlowMod": {
+            "buffer_id": 4294967295,
+            "command": 0,
+            "cookie": 0,
+            "cookie_mask": 0,
+            "flags": 0,
+            "hard_timeout": 0,
+            "idle_timeout": 0,
+            "instructions": [
+                {
+                    "OFPInstructionGotoTable": {
+                        "len": 8,
+                        "table_id": 2,
+                        "type": 1
+                    }
+                }
+            ],
+            "match": {
+                "OFPMatch": {
+                    "oxm_fields": [
+                        {
+                            "OXMTlv": {
+                                "field": "eth_type",
+                                "value": 34887,
+                                "mask": null
+                            }
+                        }
+                    ],
+                    "length": null,
+                    "type": 1
+                }
+            },
+            "out_group": 0,
+            "out_port": 0,
+            "priority": 5,
+            "table_id": 0
+        }
+    },
+    {
+        "OFPFlowMod": {
+            "buffer_id": 4294967295,
+            "command": 0,
+            "cookie": 0,
+            "cookie_mask": 0,
+            "flags": 0,
+            "hard_timeout": 0,
+            "idle_timeout": 0,
+            "instructions": [
+                {
+                    "OFPInstructionGotoTable": {
+                        "len": 8,
+                        "table_id": 3,
+                        "type": 1
+                    }
+                }
+            ],
+            "match": {
+                "OFPMatch": {
+                    "oxm_fields": [],
+                    "length": null,
+                    "type": 1
+                }
+            },
+            "out_group": 0,
+            "out_port": 0,
+            "priority": 0,
+            "table_id": 1
+        }
+    },
+    {
+        "OFPFlowMod": {
+            "buffer_id": 4294967295,
+            "command": 0,
+            "cookie": 0,
+            "cookie_mask": 0,
+            "flags": 0,
+            "hard_timeout": 0,
+            "idle_timeout": 0,
+            "instructions": [
+                {
+                    "OFPInstructionActions": {
+                        "actions": [
+                            {
+                                "OFPActionOutput": {
+                                    "len": 16,
+                                    "max_len": 65509,
+                                    "port": 4294967293,
+                                    "type": 0
+                                }
+                            }
+                        ],
+                        "type": 4
+                    }
+                }
+            ],
+            "match": {
+                "OFPMatch": {
+                    "oxm_fields": [],
+                    "length": null,
+                    "type": 1
+                }
+            },
+            "out_group": 0,
+            "out_port": 0,
+            "priority": 0,
+            "table_id": 2
+        }
+    },
+    {
+        "OFPFlowMod": {
+            "buffer_id": 4294967295,
+            "command": 0,
+            "cookie": 0,
+            "cookie_mask": 0,
+            "flags": 0,
+            "hard_timeout": 0,
+            "idle_timeout": 0,
+            "instructions": [
+                {
+                    "OFPInstructionActions": {
+                        "actions": [
+                            {
+                                "OFPActionOutput": {
+                                    "len": 16,
+                                    "max_len": 65509,
+                                    "port": 4294967293,
+                                    "type": 0
+                                }
+                            }
+                        ],
+                        "type": 4
+                    }
+                }
+            ],
+            "match": {
+                "OFPMatch": {
+                    "oxm_fields": [],
+                    "length": null,
+                    "type": 1
+                }
+            },
+            "out_group": 0,
+            "out_port": 0,
+            "priority": 0,
+            "table_id": 3
+        }
+    }
+]

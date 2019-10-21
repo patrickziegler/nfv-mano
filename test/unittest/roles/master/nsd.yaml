@@ -1,0 +1,24 @@
+hook:
+    src_ip:
+        10.0.0.6
+    dst_ip:
+        10.0.0.5
+
+placement:
+    immediate: False
+    timeout: 10
+    algorithm:
+        name: HastyTraveller
+        kwargs:
+            limit: 3
+
+jobs:
+    - name: vnf-echo
+      param: --raw eth0
+      public: False
+    - name: vnf-echo
+      param: --raw eth0
+      public: False
+    - name: vnf-echo
+      param: --raw eth0
+      public: False
