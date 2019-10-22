@@ -1,7 +1,7 @@
 from mininet.cli import CLI
-from mininet.net import Mininet
-from nfv.util.emu import (DelayTopo, create_mininet, deploy_bpf,
-                          deploy_inband_control, hosts_subns, term)
+from nfv.util.emu import (DelayTopo, addTerm, create_mininet,
+                          deploy_bpf_lldp_monitoring, deploy_inband_control,
+                          hosts_subns)
 
 
 class TestTopo(DelayTopo):
@@ -34,12 +34,11 @@ if __name__ == "__main__":
     }
     with hosts_subns(kwargs["topo"], verbose=True):
         with create_mininet(**kwargs) as net:
-            net: Mininet
-            deploy_bpf()
+            deploy_bpf_lldp_monitoring()
             deploy_inband_control(net)
-            term(net, "c1", "NFVO", "nfvctl init master")
-            term(net, "h1", "NFVM1", "nfvctl init worker h1-eth0")
-            term(net, "h2", "NFVM2", "nfvctl init worker h2-eth0")
-            term(net, "h3", "NFVM3", "nfvctl init worker h3-eth0")
-            term(net, "p2", "peer2", "python echo.py p2-eth0")
+            addTerm(net, "c1", title="NFVO", cmd="nfvctl init master")
+            addTerm(net, "h1", title="NFVM1", cmd="nfvctl init worker h1-eth0")
+            addTerm(net, "h2", title="NFVM2", cmd="nfvctl init worker h2-eth0")
+            addTerm(net, "h3", title="NFVM3", cmd="nfvctl init worker h3-eth0")
+            addTerm(net, "p2", title="peer2", cmd="python echo.py p2-eth0")
             CLI(net)

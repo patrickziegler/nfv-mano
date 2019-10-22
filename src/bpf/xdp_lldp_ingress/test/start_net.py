@@ -1,5 +1,6 @@
-from nfv.util.emu import DelayTopo, create_mininet, hosts_subns, deploy_bpf, deploy_inband_control
 from mininet.cli import CLI
+from nfv.util.emu import (DelayTopo, addTerm, create_mininet,
+                          deploy_bpf_lldp_monitoring)
 
 
 class TestTopo(DelayTopo):
@@ -16,10 +17,9 @@ class TestTopo(DelayTopo):
 if __name__ == "__main__":
     kwargs = {
         "topo": TestTopo(),
-        "terms": ["s1"],
         "ctrl_ip": "127.0.0.1",
     }
     with create_mininet(**kwargs) as net:
-        deploy_bpf()
-        print("Please run 'nfvctl init master' in xterm s1'")
+        deploy_bpf_lldp_monitoring()
+        addTerm(net, "s1", cmd="nfvctl init master")
         CLI(net)

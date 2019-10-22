@@ -68,7 +68,7 @@ class LLDPMonitor:
             }
 
     @classmethod
-    def build_default_packet(cls, chassis_id, port_id, ttl=3):
+    def build_probing_packet(cls, chassis_id, port_id, ttl=3):
         prot_eth = packet.ethernet.ethernet(
             dst=packet.lldp.LLDP_MAC_NEAREST_BRIDGE,
             src="00:00:00:00:00:00",
@@ -114,17 +114,17 @@ class LLDPMonitor:
         fields = self.interpret_node_id(
             node_id=node_id if node_id else datapath.id
         )
-        pkt = self.build_default_packet(
+        pkt = self.build_probing_packet(
             chassis_id=fields["chassis_id"],
             port_id=fields["port_id"],
         )
-        ofp = datapath.ofproto
-        ofpp = datapath.ofproto_parser
-        msg = ofpp.OFPPacketOut(
+        ofproto = datapath.ofproto
+        ofproto_parser = datapath.ofproto_parser
+        msg = ofproto_parser.OFPPacketOut(
             datapath=datapath,
-            in_port=ofp.OFPP_CONTROLLER,
-            buffer_id=ofp.OFP_NO_BUFFER,
-            actions=[ofpp.OFPActionOutput(ofp.OFPP_FLOOD)],
+            in_port=ofproto.OFPP_CONTROLLER,
+            buffer_id=ofproto.OFP_NO_BUFFER,
+            actions=[ofproto_parser.OFPActionOutput(ofproto.OFPP_FLOOD)],
             data=pkt.data,
         )
         self.pool[datapath] = {

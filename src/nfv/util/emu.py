@@ -31,7 +31,7 @@ BPF_DIR = os.path.abspath(os.sep.join(
     (os.path.dirname(os.path.abspath(__file__)), "..", "..", "bpf")))
 
 
-def deploy_xdp(key, prog, **kwargs):
+def deploy_bpf_xdp(key, prog, **kwargs):
     kwargs.setdefault("verbose", True)
     out, _, _ = shell_exec("ip link show", **kwargs)
     for line in out.split("\n"):
@@ -44,7 +44,7 @@ def deploy_xdp(key, prog, **kwargs):
             pass
 
 
-def deploy_tc(key, prog, sec="classifier", **kwargs):
+def deploy_bpf_tc(key, prog, sec="classifier", **kwargs):
     kwargs.setdefault("verbose", True)
     out, _, _ = shell_exec("ip link show", **kwargs)
     for line in out.split("\n"):
@@ -63,6 +63,13 @@ def deploy_tc(key, prog, sec="classifier", **kwargs):
             pass
 
 
+def deploy_bpf_lldp_monitoring():
+    set_memlock(size=8)
+    deploy_bpf_xdp("b", "xdp_pass")
+    deploy_bpf_xdp("s", "xdp_lldp_ingress")
+    deploy_bpf_tc("s", "bpf_lldp_egress")
+
+
 def deploy_inband_control(net, cnode="c1", **kwargs):
     kwargs.setdefault("verbose", True)
     cmd = partial(shell_exec, **kwargs)
@@ -72,13 +79,6 @@ def deploy_inband_control(net, cnode="c1", **kwargs):
     c.cmd("ip link set dev ctrl up")
     cmd("ip addr add 10.1.0.2/28 dev %s-ctrl" % cnode)
     cmd("ip link set dev %s-ctrl up" % cnode)
-
-
-def deploy_bpf():
-    set_memlock(size=8)
-    deploy_xdp("b", "xdp_pass")
-    deploy_xdp("s", "xdp_lldp_ingress")
-    deploy_tc("s", "bpf_lldp_egress")
 
 
 @contextmanager
@@ -93,10 +93,10 @@ def hosts_subns(topo, **kwargs):
             shell_exec("ip netns delete ovs-%s-eth0" % host, **kwargs)
 
 
-class IgnorantRemoteController(RemoteController):
-
-    def checkListening(self):
-        pass
+def addTerm(net, node, **kwargs):
+    net.terms.extend(
+        makeTerm(net.getNodeByName(node), **kwargs)
+    )
 
 
 class OVSHub(OVSBridge):
@@ -131,10 +131,10 @@ class DelayTopo(Topo):
             super().addLink(b1, b2, delay=delay, **kwargs)
 
 
-def term(net, node, title, cmd):
-    net.terms.extend(
-        makeTerm(net.getNodeByName(node), title, cmd=cmd)
-    )
+class IgnorantRemoteController(RemoteController):
+
+    def checkListening(self):
+        pass
 
 
 @contextmanager
@@ -148,9 +148,7 @@ def create_mininet(*args, terms=None, ctrl_ip=None, log_level="info", **kwargs):
     net.start()
     if terms is not None:
         for node in terms:
-            net.terms.extend(
-                makeTerm(net.getNodeByName(node))
-            )
+            addTerm(net, node)
     try:
         yield net
     finally:
