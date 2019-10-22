@@ -1,14 +1,13 @@
+BINDIR := build/
 BIN := \
 test_get_mac
-
-LDFLAGS := \
--luuid
 
 all: $(BIN)
 	@echo "Done"
 
 clean:
-	$(RM) -f $(addprefix $(BINDIR),$(BIN))
+	$(RM) -r ${BINDIR}
 
 %: %.c
-	${CC} $< -o $@ $(LDFLAGS)
+	mkdir -p ${BINDIR}
+	${CC} $< -luuid -o $(addprefix $(BINDIR),$@)

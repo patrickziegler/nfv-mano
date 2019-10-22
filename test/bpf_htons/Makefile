@@ -1,3 +1,4 @@
+BINDIR := build/
 BIN := \
 test_bitfield
 
@@ -5,7 +6,8 @@ all: $(BIN)
 	@echo "Done"
 
 clean:
-	$(RM) -f $(addprefix $(BINDIR),$(BIN))
+	$(RM) -r ${BINDIR}
 
 %: %.c
-	${CC} $< -o $@
+	mkdir -p ${BINDIR}
+	${CC} $< -o $(addprefix $(BINDIR),$@)
