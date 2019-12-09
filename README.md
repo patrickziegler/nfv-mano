@@ -1,4 +1,4 @@
-# nfv-mano
+# :bulb: nfv-mano
 
 ## Getting started
 
@@ -8,9 +8,9 @@ The following packages are needed:
 
 * `clang` (incl. `libclang`)
 * `python` (>= 3.5, incl. `virtualenv` and `setuptools`)
-* `docker`
-* `openvswitch`
 * `net-tools-deprecated` (`ifconfig` etc. for mininet)
+* `openvswitch`
+* `docker`
 
 ### :hammer: Build and Install
 
