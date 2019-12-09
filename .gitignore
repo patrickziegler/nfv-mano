@@ -8,3 +8,4 @@ venv
 *.user
 *.egg-info/
 build/
+extern/

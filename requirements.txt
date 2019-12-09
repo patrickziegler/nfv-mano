@@ -4,3 +4,4 @@ netifaces
 networkx
 numpy
 ryu
+flake8

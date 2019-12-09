@@ -19,7 +19,7 @@ target_include_directories("${PROJECT_NAME}_kern" PRIVATE
     "${KDIR}/arch/$(ARCH)/include/generated"
     "${KDIR}/arch/$(ARCH)/include/generated/uapi"
     "${KDIR}/tools/testing/selftests/bpf"
-    "${KDIR}/samples/bpf"
+    "${KDIR}/tools/lib/bpf"  # bpf_helpers.h
     )
 
 add_executable("${PROJECT_NAME}_user")

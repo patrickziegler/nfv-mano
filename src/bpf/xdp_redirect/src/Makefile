@@ -1,6 +1,7 @@
-CLANG  ?= /usr/bin/clang
-LLC    ?= /usr/bin/llc
-ARCH   ?= $(subst x86_64,x86,$(shell arch))
+LIBCLANG ?= /usr/lib64/clang/9.0.0
+CLANG    ?= /usr/bin/clang
+LLC      ?= /usr/bin/llc
+ARCH     ?= $(subst x86_64,x86,$(shell arch))
 
 PROJECT_DIR  := ../
 
@@ -24,7 +25,8 @@ CFLAGS_KERN := \
 -include $(KDIR)/include/linux/kconfig.h \
 -include $(KDIR)/samples/bpf/asm_goto_workaround.h \
 -I$(KDIR)/tools/testing/selftests/bpf \
--I/usr/lib64/clang/8.0.1/include \
+-I$(KDIR)/tools/lib/bpf \
+-I$(LIBCLANG)/include \
 -D__KERNEL__ \
 -Wno-pointer-sign \
 -Wno-address-of-packed-member \
