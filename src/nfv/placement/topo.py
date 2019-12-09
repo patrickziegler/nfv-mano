@@ -28,11 +28,15 @@ class NetworkModel:
         self.model = nx.DiGraph()
 
     def update(self, attr):
+        # print(json.dumps(attr, indent=4))
         node_id_src = attr["src"].pop("node_id")
         node_id_dst = attr["dst"].pop("node_id")
         rtt = attr["link"]["rtt"]
         rtt_queue = attr["link"]["rtt_queue"]
         latency = rtt_queue - rtt / 2
+        # print("%x -> %x : %f ms (%f ms)" % (node_id_src, node_id_dst, latency, rtt / 2))
+        # with open("%x-%x.csv" % (node_id_src, node_id_dst), "a+") as fp:
+        #     fp.write("%f;%f;%f;%f\n" % (rtt, rtt_queue, rtt / 2, latency))
         self.model.add_node(node_id_src, **attr["src"])
         self.model.add_node(node_id_dst, **attr["dst"])
         self.model.add_edge(node_id_src, node_id_dst, latency=latency, **attr["link"])

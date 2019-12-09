@@ -183,7 +183,7 @@ class ServiceFunctionChain:
                 param=job["param"],
                 public=job["public"],
                 immediate=sfc.immediate,
-                timeout=(1.1 * sfc.timeout),  # +10% timeout for safety
+                timeout=round(1.1 * sfc.timeout),  # +10% timeout for safety
             )
             sfc.jobs.append(vnf)
             last_label = vnf.label_out

@@ -143,10 +143,10 @@ class VIMAgent:
                   (self.ovs_sock, self.ovs_bridge_name), netns=self.netns)
         self.exec("ovs-vsctl %s set-fail-mode %s secure" %
                   (self.ovs_sock, self.ovs_bridge_name), netns=self.netns)
-        self.exec("ovs-vsctl %s add-port %s data" %
-                  (self.ovs_sock, self.ovs_bridge_name), netns=self.netns)
-        self.exec("ovs-vsctl %s set-controller %s data tcp:10.2.0.1:6653" %
-                  (self.ovs_sock, self.ovs_bridge_name), netns=self.netns)
+        self.exec("ovs-vsctl %s add-port %s %s" %
+                  (self.ovs_sock, self.ovs_bridge_name, self.IFACE_DATA_NETNS), netns=self.netns)
+        self.exec("ovs-vsctl %s set-controller %s %s tcp:10.2.0.1:6653" %
+                  (self.ovs_sock, self.ovs_bridge_name, self.IFACE_CTRL_NETNS), netns=self.netns)
 
     def stop(self):
         self.exec("ovs-vsctl %s del-br %s" %

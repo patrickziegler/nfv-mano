@@ -104,7 +104,7 @@ class LLDPMonitor:
         pkt.serialize()
         return pkt
 
-    def __init__(self, period=3):
+    def __init__(self, period=1):
         self.pool = dict()
         self.period = period
 
