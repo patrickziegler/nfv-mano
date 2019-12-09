@@ -29,15 +29,15 @@ class TestTopo(DelayTopo):
 if __name__ == "__main__":
     kwargs = {
         "topo": TestTopo(),
-        "terms": ["p1"],
+        "terms": ["c1", "h1", "p1", "p2"],
         "ctrl_ip": "10.1.0.1",
     }
     with hosts_subns(kwargs["topo"], verbose=True):
         with create_mininet(**kwargs) as net:
             deploy_bpf_lldp_monitoring()
             deploy_inband_control(net)
-            addTerm(net, "c1", title="NFVO", cmd="nfvctl init master")
-            addTerm(net, "h1", title="NFVM1", cmd="nfvctl init worker h1-eth0")
+            # addTerm(net, "c1", title="NFVO", cmd="nfvctl init master")
+            # addTerm(net, "h1", title="NFVM1", cmd="nfvctl init worker h1-eth0")
             addTerm(net, "h2", title="NFVM2", cmd="nfvctl init worker h2-eth0")
             addTerm(net, "h3", title="NFVM3", cmd="nfvctl init worker h3-eth0")
             addTerm(net, "p2", title="peer2", cmd="python echo.py p2-eth0")
