@@ -6,40 +6,25 @@
 
 The following packages are needed:
 
-* `python` (>= 3.5)
-* `setuptools`
-* `virtualenv` (for local deployment)
+* `clang` (incl. `libclang`)
+* `python` (>= 3.5, incl. `virtualenv` and `setuptools`)
 * `docker`
 * `openvswitch`
-* `iperf`
 * `net-tools-deprecated` (`ifconfig` etc. for mininet)
 
 ### :hammer: Build and Install
 
-1. Clone this repository
+1. Clone and bootstrap this repository (as unpriviliged user)
 ```bash
-git clone --recurse-submodules git@git.comnets.net:patrickziegler/nfv-mano.git
+git clone https://github.com/patrickziegler/nfv-mano.git
 cd nfv-mano
+./bootstrap.sh
 ```
 
-2. Create and activate a virtual environment
+2. Become super user and activate the virtual environment
 ```bash
-python3 -m virtualenv .virtualenv --system-site-packages
-source .virtualenv/bin/activate
-```
-
-3. Install mininet from submodule
-```bash
-cd extern/mininet
-make mnexec
-mv -v mnexec ../../.virtualenv/bin
-python setup.py develop
-```
-
-4. Build and install the package and its dependencies (in virtual environment)
-```bash
-pip install -r requirements.txt
-python setup.py develop
+su
+source venv
 ```
 
 ### Usage
