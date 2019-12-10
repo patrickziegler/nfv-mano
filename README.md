@@ -17,14 +17,12 @@ The following packages are needed:
 1. Clone and bootstrap this repository (as unpriviliged user)
 ```bash
 git clone https://github.com/patrickziegler/nfv-mano.git
-cd nfv-mano
-./bootstrap.sh
+nfv-mano/bootstrap.sh
 ```
 
 2. Become super user and activate the virtual environment
 ```bash
-su
-source venv
+cd nfv-mano && su -c "/bin/bash --init-file venv"
 ```
 
 ### Usage
