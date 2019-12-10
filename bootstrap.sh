@@ -13,7 +13,7 @@ function mk_venv {
     # eval $PYTHON -m virtualenv "${VIRT_ENV}" --system-site-packages
     eval $PYTHON -m virtualenv "${VIRT_ENV}"
     source "${VIRT_ENV}/bin/activate"
-    ln -sf .venv/bin/activate venv
+    ln -sf "${PROJ_DIR}/.venv/bin/activate" venv
 }
 
 function get_mininet {
