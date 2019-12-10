@@ -23,7 +23,7 @@ from nfv.util.emu import (DelayTopo, addTerm, create_mininet,
                           deploy_bpf_lldp_monitoring)
 
 
-class DelayLinearTopo(DelayTopo):
+class LinearDelayTopo(DelayTopo):
 
     def __init__(self, *args, length, delay, **kwargs):
         self.length = length
@@ -85,7 +85,7 @@ if __name__ == "__main__":
     data = np.zeros(shape=(n, 3))
     data[:, 0] = 10 * (np.arange(n) + 1)  # chain length in first column
     for i in range(n):
-        topo = DelayLinearTopo(length=int(data[i, 0]), delay="10ms")
+        topo = LinearDelayTopo(length=int(data[i, 0]), delay="10ms")
         latencies = np.asarray(measure_emulated_latencies(topo))
         data[i, 1] = np.mean(latencies)
         data[i, 2] = np.std(latencies)
