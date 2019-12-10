@@ -63,8 +63,8 @@ def deploy_bpf_tc(key, prog, sec="classifier", **kwargs):
             pass
 
 
-def deploy_bpf_lldp_monitoring():
-    set_memlock(size=8)
+def deploy_bpf_lldp_monitoring(memlock=8):
+    set_memlock(size=memlock)
     deploy_bpf_xdp("b", "xdp_pass")
     deploy_bpf_xdp("s", "xdp_lldp_ingress")
     deploy_bpf_tc("s", "bpf_lldp_egress")
