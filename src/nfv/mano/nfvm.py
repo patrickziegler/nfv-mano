@@ -27,6 +27,7 @@ from ryu.controller.handler import (CONFIG_DISPATCHER, MAIN_DISPATCHER,
                                     set_ev_cls)
 from ryu.lib import hub
 from ryu.lib.packet import ether_types, ethernet, lldp, mpls, packet
+from ryu.ofproto import ofproto_v1_4
 
 from nfv.mano.config.nfvm_default_config import get_nfvm_default_config
 from nfv.mano.vim import VIMAgent
@@ -38,14 +39,15 @@ ETH_P_ALL = 0x03
 
 class NFVManager(app_manager.RyuApp):
 
-    _CONTEXTS = {'wsgi': WSGIApplication}
+    _CONTEXTS = {"wsgi": WSGIApplication}
+    OFP_VERSIONS = [ofproto_v1_4.OFP_VERSION]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         if RyuCfg.CONF.iface is None:
-            raise ValueError("Parameter 'iface' was None")
-        self.wsgi = kwargs['wsgi']
-        self.wsgi.register(NFVManagerREST, {'nfvm': self})
+            raise ValueError("Parameter "iface" was None")
+        self.wsgi = kwargs["wsgi"]
+        self.wsgi.register(NFVManagerREST, {"nfvm": self})
         self.iface = RyuCfg.CONF.iface
         self.node_id = uuid.uuid4()
         self.datapath = None
@@ -76,7 +78,7 @@ class NFVManager(app_manager.RyuApp):
     def send_attr(attr):
         requests.post(
             url="http://10.0.0.1:8080/lldp",
-            headers={'Content-type': 'application/json'},
+            headers={"Content-type": "application/json"},
             data=json.dumps(attr),
         )
 
@@ -219,7 +221,7 @@ class NFVManagerREST(ControllerBase):
         super().__init__(req, link, data, **config)
         self.app = data["nfvm"]
 
-    @route("status", "/vnf", methods=['GET'])
+    @route("status", "/vnf", methods=["GET"])
     def req_handler_vnf(self, req, **kwargs):
         return Response(
             content_type="application/json",

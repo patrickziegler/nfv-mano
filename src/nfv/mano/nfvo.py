@@ -23,6 +23,7 @@ from ryu.controller.handler import (CONFIG_DISPATCHER, MAIN_DISPATCHER,
                                     set_ev_cls)
 from ryu.lib import hub
 from ryu.lib.packet import ether_types, ethernet, ipv4, lldp, mpls, packet
+from ryu.ofproto import ofproto_v1_4
 
 from nfv.mano.config.nfvo_default_config import get_nfvo_default_config
 from nfv.mano.mixin.learning_switch import L2SwitchMixin
@@ -33,13 +34,14 @@ from nfv.placement.topo import NetworkModel
 
 class NFVOrchestrator(app_manager.RyuApp, L2SwitchMixin):
 
-    _CONTEXTS = {'wsgi': WSGIApplication}
+    _CONTEXTS = {"wsgi": WSGIApplication}
+    OFP_VERSIONS = [ofproto_v1_4.OFP_VERSION]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         L2SwitchMixin.__init__(self)
-        self.wsgi = kwargs['wsgi']
-        self.wsgi.register(NFVOrchestratorREST, {'nfvo': self})
+        self.wsgi = kwargs["wsgi"]
+        self.wsgi.register(NFVOrchestratorREST, {"nfvo": self})
         self.monitor = LLDPMonitor()
         self.model = NetworkModel()
         self.services = {}
@@ -66,7 +68,7 @@ class NFVOrchestrator(app_manager.RyuApp, L2SwitchMixin):
             addr = self.model.get_addr(vnf.node_id)
             requests.post(
                 url="http://%s:8080/vnf/%s" % (addr, cmd),
-                headers={'Content-type': 'application/json'},
+                headers={"Content-type": "application/json"},
                 data=vnf.as_json(),
             )
 
@@ -265,28 +267,40 @@ class NFVOrchestratorREST(ControllerBase):
         self.app = data["nfvo"]
         self.app: NFVOrchestrator
 
-    @route("monitoring", "/lldp", methods=['POST'])
+    @route("monitoring", "/lldp", methods=["POST"])
     def req_handler_lldp(self, req, **kwargs):
         attr = json.loads(req.body)
         attr["dst"]["addr"] = req.remote_addr
         self.app.model.update(attr)
         return Response(status=200)
 
-    @route("status", "/model", methods=['GET'])
+    @route("monitoring", "/lldp/period", methods=["GET", "POST"])
+    def req_handler_lldp_period(self, req, **kwargs):
+        if req.method == "GET":
+            return Response(
+                content_type="application/json",
+                body=json.dumps({"period": self.app.monitor.period}, indent=2),
+            )
+        else:
+            data = json.loads(req.body)
+            self.app.monitor.period = data["period"]
+            return Response(status=200)
+
+    @route("status", "/model", methods=["GET"])
     def req_handler_model(self, req, **kwargs):
         return Response(
             content_type="application/json",
-            body=self.app.model.as_json(indent=4),
+            body=self.app.model.as_json(indent=2),
         )
 
-    @route("status", "/sfc", methods=['GET'])
+    @route("status", "/sfc", methods=["GET"])
     def req_handler_sfc(self, req, **kwargs):
         return Response(
             content_type="application/json",
-            body=json.dumps([sfc.as_dict() for sfc in self.app.services.values()], indent=4),
+            body=json.dumps([sfc.as_dict() for sfc in self.app.services.values()], indent=2),
         )
 
-    @route("status", "/plot", methods=['GET'])
+    @route("status", "/plot", methods=["GET"])
     def req_handler_plot(self, req, **kwargs):
         self.app.model.plot()
         return Response(status=200)
